@@ -1,7 +1,6 @@
 package com.example.coffeeorderingwebapp.order;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +10,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/orders")
 public class OrderController {
+
+    // 커피 주문 정보 등록
     @PostMapping
     public ResponseEntity postOrder(@RequestParam("memberId") long memberId,
                             @RequestParam("coffeeId") long coffeeId) {
@@ -22,12 +23,14 @@ public class OrderController {
         return new ResponseEntity<>(map, HttpStatus.CREATED);
     }
 
+    // 특정 주문 조회
     @GetMapping("/{order-id}")
     public ResponseEntity getOrder(@PathVariable("order-id") long orderId) {
         System.out.println("# orderId: " + orderId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 모든 주문 정보 조회
     @GetMapping
     public ResponseEntity getOrders() {
         System.out.println("# get Orders");
