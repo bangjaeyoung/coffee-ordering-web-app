@@ -1,26 +1,30 @@
-package com.example.coffeeorderingwebapp.coffee;
+package com.example.coffeeorderingwebapp.coffee.controller;
 
+import com.example.coffeeorderingwebapp.coffee.dto.CoffeePatchDto;
+import com.example.coffeeorderingwebapp.coffee.dto.CoffeePostDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/v1/coffees")
+@Validated
 public class CoffeeController {
 
     // 커피 정보 등록
     @PostMapping
-    public ResponseEntity postCoffee(@RequestBody CoffeePostDto coffeePostDto) {
+    public ResponseEntity postCoffee(@Valid @RequestBody CoffeePostDto coffeePostDto) {
         return new ResponseEntity<>(coffeePostDto, HttpStatus.CREATED);
     }
 
     // 커피 정보 수정
     @PatchMapping("/{coffee-id}")
-    public ResponseEntity patchCoffee(@PathVariable("coffee-id") long coffeeId,
-                                      @RequestBody CoffeePatchDto coffeePatchDto) {
+    public ResponseEntity patchCoffee(@PathVariable("coffee-id") @Positive long coffeeId,
+                                      @Valid @RequestBody CoffeePatchDto coffeePatchDto) {
         coffeePatchDto.setCoffeeId(coffeeId);
         coffeePatchDto.setEngName("Vanilla Latte");
         coffeePatchDto.setKorName("바닐라 라떼");
