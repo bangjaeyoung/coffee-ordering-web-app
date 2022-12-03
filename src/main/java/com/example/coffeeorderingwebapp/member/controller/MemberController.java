@@ -4,7 +4,7 @@ import com.example.coffeeorderingwebapp.member.dto.MemberPatchDto;
 import com.example.coffeeorderingwebapp.member.dto.MemberPostDto;
 import com.example.coffeeorderingwebapp.member.dto.MemberResponseDto;
 import com.example.coffeeorderingwebapp.member.entity.Member;
-import com.example.coffeeorderingwebapp.member.mapper.MemberMapper;
+import com.example.coffeeorderingwebapp.member.mapstruct.mapper.MemberMapper;
 import com.example.coffeeorderingwebapp.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
