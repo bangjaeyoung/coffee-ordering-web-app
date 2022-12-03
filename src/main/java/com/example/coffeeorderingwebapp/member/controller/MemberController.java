@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/members")
@@ -64,10 +63,7 @@ public class MemberController {
     public ResponseEntity getMembers() {
         List<Member> members = memberService.findMembers();
 
-        List<MemberResponseDto> response =
-                members.stream()
-                        .map(member -> mapper.memberToMemberResponseDto(member))
-                        .collect(Collectors.toList());
+        List<MemberResponseDto> response = mapper.membersToMemberResponseDtos(members);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -13,17 +13,17 @@ public class CoffeePatchDto {
             message = "커피명(영문)은 영문이어야 합니다. 예) Cafe Latte")
     private String engName;
 
-        @NotSpace(message = "커피명(한글)은 공백이 아니어야 합니다.")
-        private String korName;
+    @NotSpace(message = "커피명(한글)은 공백이 아니어야 합니다.")
+    private String korName;
 
 
-        private Optional<@Range(min = 100, max = 50000) Integer> price = Optional.empty();
+    private Optional<@Range(min = 100, max = 50000) Integer> price = Optional.empty();
 
-        public long getCoffeeId() {
-            return coffeeId;
-        }
+    public long getCoffeeId() {
+        return coffeeId;
+    }
 
-        public void setCoffeeId(long coffeeId) {
+    public void setCoffeeId(long coffeeId) {
         this.coffeeId = coffeeId;
     }
 
@@ -43,8 +43,8 @@ public class CoffeePatchDto {
         this.korName = korName;
     }
 
-    public Optional<Integer> getPrice() {
-        return price;
+    public int getPrice() {
+        return price.orElse(0);
     }
 
     public void setPrice(Optional<Integer> price) {
