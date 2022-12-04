@@ -1,5 +1,7 @@
 package com.example.coffeeorderingwebapp.member.service;
 
+import com.example.coffeeorderingwebapp.exception.BusinessLogicException;
+import com.example.coffeeorderingwebapp.exception.ExceptionCode;
 import com.example.coffeeorderingwebapp.member.entity.Member;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,7 @@ public class MemberService {
     }
 
     public Member findMember(long memberId) {
-        Member member = new Member(memberId, "hgd@gmail.com", "홍길동", "010-1234-5678");
-        return member;
+        throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
     }
 
     public List<Member> findMembers() {
@@ -31,6 +32,7 @@ public class MemberService {
     }
 
     public void deleteMember(long memberId) {
-
+        String logResult = null;
+        System.out.println(logResult.toUpperCase());
     }
 }

@@ -6,6 +6,7 @@ import com.example.coffeeorderingwebapp.member.dto.MemberResponseDto;
 import com.example.coffeeorderingwebapp.member.entity.Member;
 import com.example.coffeeorderingwebapp.member.mapstruct.mapper.MemberMapper;
 import com.example.coffeeorderingwebapp.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/members")
 @Validated
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
