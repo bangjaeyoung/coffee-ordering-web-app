@@ -2,10 +2,12 @@ package com.example.coffeeorderingwebapp.coffee.controller;
 
 import com.example.coffeeorderingwebapp.coffee.dto.CoffeePatchDto;
 import com.example.coffeeorderingwebapp.coffee.dto.CoffeePostDto;
-import com.example.coffeeorderingwebapp.coffee.dto.CoffeeResponseDto;
 import com.example.coffeeorderingwebapp.coffee.entity.Coffee;
 import com.example.coffeeorderingwebapp.coffee.mapper.CoffeeMapper;
 import com.example.coffeeorderingwebapp.coffee.service.CoffeeService;
+import com.example.coffeeorderingwebapp.response.MultiResponseDto;
+import com.example.coffeeorderingwebapp.response.SingleResponseDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,58 +21,50 @@ import java.util.List;
 @RequestMapping("/v1/coffees")
 @Validated
 public class CoffeeController {
-    private final CoffeeService coffeeService;
-    private final CoffeeMapper mapper;
+    private CoffeeService coffeeService;
+    private CoffeeMapper mapper;
 
-    public CoffeeController(CoffeeService coffeeService, CoffeeMapper mapper) {
+    public CoffeeController(CoffeeService coffeeService, CoffeeMapper coffeeMapper) {
         this.coffeeService = coffeeService;
-        this.mapper = mapper;
+        this.mapper = coffeeMapper;
     }
 
     // 커피 정보 등록
     @PostMapping
     public ResponseEntity postCoffee(@Valid @RequestBody CoffeePostDto coffeePostDto) {
-        Coffee coffee = mapper.coffeePostDtoToCoffee(coffeePostDto);
-
-        Coffee response = coffeeService.createCoffee(coffee);
-
-        return new ResponseEntity<>(mapper.coffeeToCoffeeResponseDto(response), HttpStatus.CREATED);
+        Coffee coffee = coffeeService.createCoffee(mapper.coffeePostDtoToCoffee(coffeePostDto));
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.coffeeToCoffeeResponseDto(coffee)), HttpStatus.CREATED);
     }
 
-    // 커피 정보 수정
+    // 특정 커피 정보 갱신
     @PatchMapping("/{coffee-id}")
     public ResponseEntity patchCoffee(@PathVariable("coffee-id") @Positive long coffeeId,
                                       @Valid @RequestBody CoffeePatchDto coffeePatchDto) {
-        Coffee coffee = mapper.coffeePatchDtoToCoffee(coffeePatchDto);
-
-        Coffee response = coffeeService.updateCoffee(coffee);
-
-        return new ResponseEntity<>(mapper.coffeeToCoffeeResponseDto(response), HttpStatus.OK);
+        coffeePatchDto.setCoffeeId(coffeeId);
+        Coffee coffee = coffeeService.updateCoffee(mapper.coffeePatchDtoToCoffee(coffeePatchDto));
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.coffeeToCoffeeResponseDto(coffee)), HttpStatus.OK);
     }
 
-    // 하나의 커피 정보 조회
+    // 특정 커피 정보 조회
     @GetMapping("/{coffee-id}")
     public ResponseEntity getCoffee(@PathVariable("coffee-id") long coffeeId) {
-        Coffee response = coffeeService.findCoffee(coffeeId);
-
-        return new ResponseEntity<>(mapper.coffeeToCoffeeResponseDto(response), HttpStatus.OK);
+        Coffee coffee = coffeeService.findCoffee(coffeeId);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.coffeeToCoffeeResponseDto(coffee)), HttpStatus.OK);
     }
 
     // 모든 커피 정보 조회
     @GetMapping
-    public ResponseEntity getCoffees() {
-        List<Coffee> coffees = coffeeService.findCoffees();
-
-        List<CoffeeResponseDto> response = mapper.coffeesToCoffeeResponseDtos(coffees);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity getCoffees(@Positive @RequestParam int page,
+                                     @Positive @RequestParam int size) {
+        Page<Coffee> pageCoffees = coffeeService.findCoffees(page - 1, size);
+        List<Coffee> coffees = pageCoffees.getContent();
+        return new ResponseEntity<>(new MultiResponseDto<>(mapper.coffeesToCoffeeResponseDtos(coffees), pageCoffees), HttpStatus.OK);
     }
 
     // 특정 커피 정보 삭제
     @DeleteMapping("/{coffee-id}")
     public ResponseEntity deleteCoffee(@PathVariable("coffee-id") long coffeeId) {
         coffeeService.deleteCoffee(coffeeId);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

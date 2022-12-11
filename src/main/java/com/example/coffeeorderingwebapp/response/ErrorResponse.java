@@ -25,7 +25,7 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    private ErrorResponse(List<FieldError> fieldErrors, List<ConstraintViolationError> violationErrors) {
+    private ErrorResponse(final List<FieldError> fieldErrors, final List<ConstraintViolationError> violationErrors) {
         this.fieldErrors = fieldErrors;
         this.violationErrors = violationErrors;
     }
@@ -50,6 +50,10 @@ public class ErrorResponse {
         return new ErrorResponse(httpStatus.value(), httpStatus.getReasonPhrase());
     }
 
+    public static ErrorResponse of(HttpStatus httpStatus, String message) {
+        return new ErrorResponse(httpStatus.value(), message);
+    }
+
     // Field Error 가공
     @Getter
     public static class FieldError {
@@ -65,11 +69,11 @@ public class ErrorResponse {
 
         public static List<FieldError> of(BindingResult bindingResult) {
             final List<org.springframework.validation.FieldError> fieldErrors = bindingResult.getFieldErrors();
-
             return fieldErrors.stream()
                     .map(error -> new FieldError(
                             error.getField(),
-                            error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
+                            error.getRejectedValue() == null ?
+                                    "" : error.getRejectedValue().toString(),
                             error.getDefaultMessage()))
                     .collect(Collectors.toList());
         }
@@ -93,8 +97,8 @@ public class ErrorResponse {
                     .map(constraintViolation -> new ConstraintViolationError(
                             constraintViolation.getPropertyPath().toString(),
                             constraintViolation.getInvalidValue().toString(),
-                            constraintViolation.getMessage()))
-                    .collect(Collectors.toList());
+                            constraintViolation.getMessage()
+                    )).collect(Collectors.toList());
         }
     }
 }
